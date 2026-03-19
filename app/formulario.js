@@ -1,10 +1,13 @@
 import { View, Text, TouchableOpacity, StyleSheet, TextInput } from 'react-native';
 import React, { useState } from 'react';
 import { useRouter} from 'expo-router';
+import { useContext } from 'react';
 
 export default function Home() {
   const router = useRouter();
   const [nome,setNome] = useState('');
+  const {salas, removerVaga, adicionarVaga} = useContext(AppContext);
+  
 
   const apagarDados = () => {
     setNome('');

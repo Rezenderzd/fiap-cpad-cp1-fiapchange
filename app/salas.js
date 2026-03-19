@@ -1,7 +1,11 @@
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
+import { useContext } from 'react';
 export default function Sobre() {
+  
   const router = useRouter();
+  const {salas} = useContext(AppContext);
+
   return (
     <View style={styles.container}>
         <View style ={styles.salas}>
