@@ -2,6 +2,7 @@ import { View, Text, TouchableOpacity, StyleSheet, TextInput } from 'react-nativ
 import React, { useState } from 'react';
 import { useRouter} from 'expo-router';
 import { useContext } from 'react';
+import { AppContext } from './provider.js';
 
 export default function Home() {
   const router = useRouter();

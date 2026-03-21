@@ -1,6 +1,8 @@
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useContext } from 'react';
+import { AppContext } from './provider.js';
+
 export default function Sobre() {
   
   const router = useRouter();
