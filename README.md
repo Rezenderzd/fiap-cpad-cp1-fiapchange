@@ -30,7 +30,7 @@ O sistema gerencia em tempo real a disponibilidade de vagas, garantindo que nenh
 ### Instalação
 1. Clone o repositório:
    ```bash
-   git clone https://github.com/seu-usuario/cp-fiap-salas.git
+   git clone https://github.com/Rezenderzd/cp1-react-native.git
 2. Instale as dependências:
 
     ```Bash
