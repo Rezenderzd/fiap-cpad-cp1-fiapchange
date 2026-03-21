@@ -1,29 +1,78 @@
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useContext } from 'react';
 import { AppContext } from './provider.js';
 
 export default function Sobre() {
-  
   const router = useRouter();
-  const {salas} = useContext(AppContext);
+  const { salas } = useContext(AppContext);
 
   return (
     <View style={styles.container}>
-        <View style ={styles.salas}>
-            <Text style={styles.sala}>Colocar sala e número baseado em variavel</Text>
-        </View>
-      <TouchableOpacity onPress={() => router.push('formulario')}>
-        <Text style={styles.voltar}>Ir para o formulario</Text>
+      <Text style={styles.titulo}>Salas Disponíveis</Text>
+      
+      <ScrollView contentContainerStyle={styles.listaSalas}>
+        {salas.map((item, index) => (
+          <View key={index} style={styles.cardSala}>
+            <Text style={styles.salaTexto}>Sala: {item.sala}</Text>
+            <Text style={styles.vagasTexto}>Vagas: {item.vagas}</Text>
+          </View>
+        ))}
+      </ScrollView>
+
+      <TouchableOpacity style={styles.botaoVoltar} onPress={() => router.push('/')}>
+        <Text style={styles.voltarTexto}>Ir para o formulário</Text>
       </TouchableOpacity>
     </View>
   );
 }
+
 const styles = StyleSheet.create({
-  container:  { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#000' },
-  salas:      {color: ''},
-  sala:       {color: '#ED145B'},
-  titulo:     { fontSize: 28, fontWeight: 'bold', marginBottom: 12 },
-  descricao:  { fontSize: 16, color: '#555', marginBottom: 24 },
-  voltar:     { fontSize: 16, color: '#ED145B', fontWeight: '600' },
+  container: { 
+    flex: 1, 
+    alignItems: 'center', 
+    backgroundColor: '#000', 
+    paddingTop: 60 
+  },
+  titulo: { 
+    fontSize: 32, 
+    fontWeight: 'bold', 
+    marginBottom: 24, 
+    color: '#ED145B' 
+  },
+  listaSalas: { 
+    alignItems: 'center', 
+    gap: 15,
+    paddingBottom: 20
+  },
+  cardSala: {
+    width: 320,
+    backgroundColor: '#1A1A1A', 
+    borderLeftWidth: 5,
+    borderLeftColor: '#ED145B', 
+    padding: 20,
+    borderRadius: 8,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center'
+  },
+  salaTexto: { 
+    color: '#fff', 
+    fontSize: 18, 
+    fontWeight: 'bold' 
+  },
+  vagasTexto: { 
+    color: '#ED145B', 
+    fontSize: 16 
+  },
+  botaoVoltar: {
+    marginVertical: 30,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ED145B'
+  },
+  voltarTexto: { 
+    fontSize: 16, 
+    color: '#ED145B', 
+    fontWeight: '600' 
+  },
 });

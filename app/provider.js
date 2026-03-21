@@ -1,42 +1,42 @@
-import {createContext, useState } from 'react';
+import { createContext, useState } from 'react';
 
 export const AppContext = createContext();
-
-export const AppProvider = ({children})=>{
+export const AppProvider = ({ children }) => {
 
     const [salas, setSalas] = useState([
         {
-        sala:'2ccpo',
-        vagas:4
+            sala: '2ccpo',
+            vagas: 4
         },
         {
-            sala:'2ccpw',
-            vagas:5,
+            sala: '2ccpw',
+            vagas: 5,
         },
     ]);
-
-    const removerVaga =(salaDigitada)=>{
-        const salasAtualizadas = salas.map((item)=>{
-            if(item.sala === salaDigitada){
-                return{...item, vagas: item.vagas - 1};
-            }
-            return item;
-        })
-        setSalas(salasAtualizadas);
+    
+    const removerVaga = (salaDigitada) => {
+        setSalas((prevSalas) =>
+            prevSalas.map((item) => {
+                if (item.sala.toLowerCase() === salaDigitada.toLowerCase()) {
+                    return { ...item, vagas: item.vagas - 1 };
+                }
+                return item;
+            })
+        );
     }
 
-    const adicionarVaga = (salaDigitada)=>{
-        const salasAtualizadas = salas.map((item)=>{
-            if(item.sala === salaDigitada){
-                return{...item, vagas: item.vagas + 1};
-            }
-            return item;
-        })
-        setSalas(salasAtualizadas);
+    const adicionarVaga = (salaDigitada) => {
+        setSalas((prevSalas) =>
+            prevSalas.map((item) => {
+                if (item.sala.toLowerCase() === salaDigitada.toLowerCase()) {
+                    return { ...item, vagas: item.vagas + 1 };
+                }
+                return item;
+            })
+        );
     }
-
-    return(
-        <AppContext.Provider value={{salas, setSalas, adicionarVaga, removerVaga}}>
+    return (
+        <AppContext.Provider value={{ salas, setSalas, adicionarVaga, removerVaga }}>
             {children}
         </AppContext.Provider>
     );
