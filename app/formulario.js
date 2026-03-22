@@ -1,72 +1,91 @@
-import { View, Text, TouchableOpacity, StyleSheet, TextInput, Alert } from 'react-native';
-import React, { useState } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, TextInput, Alert, Modal, FlatList } from 'react-native';
+import React, { useState, useContext } from 'react';
 import { useRouter } from 'expo-router';
-import { useContext } from 'react';
 import { AppContext } from './provider.js';
 
 export default function Home() {
   const router = useRouter();
-  const [nome, setNome] = useState('');
-  const [salaAtual, setSalaAtual] = useState('');
-  const [salaDestino, setSalaDestino] = useState('');
-  const [motivo, setMotivo] = useState('');
-
   const { salas, removerVaga, adicionarVaga, adicionarAoHistorico } = useContext(AppContext);
+
+  const [nome, setNome] = useState('');
+  const [motivo, setMotivo] = useState('');
+  const [salaAtual, setSalaAtual] = useState(null);
+  const [salaDestino, setSalaDestino] = useState(null);
+  
+  const [modalVisible, setModalVisible] = useState(false);
+  const [tipoSelecao, setTipoSelecao] = useState(''); 
 
   const apagarDados = () => {
     setNome('');
-    setSalaAtual('');
-    setSalaDestino('');
+    setSalaAtual(null);
+    setSalaDestino(null);
     setMotivo('');
-  }
+  };
+
+  const abrirSelecao = (tipo) => {
+    setTipoSelecao(tipo);
+    setModalVisible(true);
+  };
+
+  const selecionarSala = (sala) => {
+    if (tipoSelecao === 'atual') setSalaAtual(sala);
+    else setSalaDestino(sala);
+    setModalVisible(false);
+  };
+
+  const processarTroca = () => {
+    // Lógica de falha aleatória do seu colega
+    const chance = Math.random();
+    const motivosFalha = [
+      "Seu Motivo não foi aceito.",
+      "Existem muitos alunos com interesse nessa sala.",
+      "Devido ao seu baixo desempenho acadêmico sua solicitação foi negada.",
+      "Atualmente a mudança de sala está fora do ar.",
+      "O coordenador do curso precisa validar esta troca manualmente.",
+      "Aluno já possui uma solicitação pendente."
+    ];
+
+    if (chance > 0.7) {
+      const motivoAleatorio = motivosFalha[Math.floor(Math.random() * motivosFalha.length)];
+      Alert.alert('Solicitação Negada', motivoAleatorio);
+      return;
+    }
+
+    // Se passar na chance, executa a troca
+    adicionarAoHistorico(nome, salaAtual.sala, salaDestino.sala);
+    adicionarVaga(salaAtual.sala);
+    removerVaga(salaDestino.sala);
+
+    Alert.alert('Sucesso', `Mudança de ${nome} processada para ${salaDestino.sala.toUpperCase()}!\nMotivo: ${motivo}`);
+    apagarDados();
+  };
 
   const enviarDados = () => {
-  if (nome.trim() === '' || salaAtual.trim() === '' || salaDestino.trim() === '' || motivo.trim() === '') {
-    Alert.alert('Erro', 'Por favor, preencha todos os campos.');
-    return;
-  }
+    if (!nome.trim() || !salaAtual || !salaDestino || !motivo.trim()) {
+      Alert.alert('Erro', 'Por favor, preencha todos os campos.');
+      return;
+    }
 
-  // const existeSalaOrigem = salas.find(s => s.sala.toUpperCase() === salaAtual.toUpperCase());
-  // const existeSalaDestino = salas.find(s => s.sala.toUpperCase() === salaDestino.toUpperCase()); 
-  // caso queiram usar sem include coloque "=== salaDigitada.toUpperCase())" nas funcoes de adicionar 
+    if (salaAtual.sala === salaDestino.sala) {
+      Alert.alert('Erro', 'A sala de destino deve ser diferente da atual.');
+      return;
+    }
 
-  
-  const existeSalaOrigem = salas.find(s => s.sala.toUpperCase().includes(salaAtual.toUpperCase().trim()));
-  const existeSalaDestino = salas.find(s => s.sala.toUpperCase().includes(salaDestino.toUpperCase().trim()));
-  
+    if (salaDestino.vagas <= 0) {
+      Alert.alert('Erro', 'A sala de destino não possui mais vagas.');
+      return;
+    }
 
-  if (!existeSalaOrigem || !existeSalaDestino) {
-    Alert.alert('Erro', 'Sala não encontrada. Verifique os nomes digitados.');
-    return;
-  }
-
-  if (existeSalaDestino.vagas <= 0) {
-    Alert.alert('Erro', 'A sala de destino não possui mais vagas.');
-    return;
-  }
-
-  const chance = Math.random();
-  const motivosFalha = [
-  "Seu Motivo não foi aceito.",
-  "Existem muitos alunos com interesse nessa sala, tente novamente nos proximos meses.",
-  "Devido ao seu baixo desempenho academico sua solicitação foi negada.",
-  "Atualmente a mudança de sala está fora do ar.",
-  "Solicitação negada: o coordenador do curso precisa validar esta troca manualmente.",
-  "Aluno já possui uma solicitação de troca pendente de aprovação."
-];
-
-  if (chance > 0.7) {
-  const motivoAleatorio = motivosFalha[Math.floor(Math.random() * motivosFalha.length)];
-  Alert.alert('Erro', motivoAleatorio);
-  return;
-}
-  adicionarAoHistorico(nome, salaAtual, salaDestino);
-  adicionarVaga(existeSalaOrigem.sala);
-  removerVaga(existeSalaDestino.sala);
-
-  Alert.alert('Sucesso', `Mudança de ${nome} processada para ${salaDestino.toUpperCase()}!\nMotivo: ${motivo}`);
-  apagarDados();
-};
+    // FEATURE: Alert de Confirmação antes de rodar a lógica
+    Alert.alert(
+      "Confirmar Solicitação",
+      `Deseja confirmar a troca de ${nome} da sala ${salaAtual.sala.toUpperCase()} para a ${salaDestino.sala.toUpperCase()}?`,
+      [
+        { text: "Cancelar", style: "cancel" },
+        { text: "Confirmar", onPress: processarTroca }
+      ]
+    );
+  };
 
   return (
     <View style={styles.container}>
@@ -82,31 +101,23 @@ export default function Home() {
 
       <View style={styles.blocoPergunta}>
         <Text style={styles.pergunta}>Sala Atual:</Text>
-        <TextInput 
-          placeholder="Ex: 2CCPO" 
-          style={styles.input} 
-          onChangeText={setSalaAtual} 
-          value={salaAtual} 
-          autoCapitalize="none"
-        />
+        <TouchableOpacity style={styles.seletor} onPress={() => abrirSelecao('atual')}>
+          <Text style={styles.seletorTexto}>{salaAtual ? salaAtual.sala.toUpperCase() : "Selecionar sala..."}</Text>
+        </TouchableOpacity>
       </View>
 
       <View style={styles.blocoPergunta}>
         <Text style={styles.pergunta}>Sala Destino:</Text>
-        <TextInput 
-          placeholder="Ex: 2CCPW" 
-          style={styles.input} 
-          onChangeText={setSalaDestino} 
-          value={salaDestino} 
-          autoCapitalize="none"
-        />
+        <TouchableOpacity style={styles.seletor} onPress={() => abrirSelecao('destino')}>
+          <Text style={styles.seletorTexto}>{salaDestino ? salaDestino.sala.toUpperCase() : "Selecionar sala..."}</Text>
+        </TouchableOpacity>
       </View>
 
       <View style={styles.blocoPergunta}>
         <Text style={styles.pergunta}>Motivo da Troca:</Text>
         <TextInput 
           placeholder="Explique o motivo" 
-          style={[styles.input, { height: 80 }]} 
+          style={[styles.input, { height: 60 }]} 
           onChangeText={setMotivo} 
           value={motivo} 
           multiline={true}
@@ -125,6 +136,27 @@ export default function Home() {
       <TouchableOpacity style={{ marginTop: 20 }} onPress={() => router.push('/salas')}>
         <Text style={styles.pergunta}>Ver lista de salas →</Text>
       </TouchableOpacity>
+
+      <Modal visible={modalVisible} animationType="slide" transparent={true}>
+        <View style={styles.modalContainer}>
+          <View style={styles.modalConteudo}>
+            <Text style={styles.modalTitulo}>Escolha a Sala</Text>
+            <FlatList
+              data={salas}
+              keyExtractor={(item) => item.sala}
+              renderItem={({ item }) => (
+                <TouchableOpacity style={styles.itemSala} onPress={() => selecionarSala(item)}>
+                  <Text style={styles.itemTexto}>{item.sala.toUpperCase()}</Text>
+                  <Text style={styles.itemVagas}>{item.vagas} vagas</Text>
+                </TouchableOpacity>
+              )}
+            />
+            <TouchableOpacity style={styles.botaoFechar} onPress={() => setModalVisible(false)}>
+              <Text style={styles.botaoTextoFechar}>Fechar</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -134,8 +166,18 @@ const styles = StyleSheet.create({
   blocoPergunta: { marginBottom: 15, gap: 5 },
   pergunta: { color: '#ED145B', fontSize: 16 },
   input: { width: 300, backgroundColor: '#ED145B', borderRadius: 8, padding: 12, fontSize: 14, color: '#000' },
+  seletor: { width: 300, backgroundColor: '#1A1A1A', borderRadius: 8, padding: 12, borderWidth: 1, borderColor: '#ED145B' },
+  seletorTexto: { color: '#fff' },
   campoBotoes: { alignItems: 'center', justifyContent: 'space-around', flexDirection: 'row', gap: 20 },
   botaoApagar: { backgroundColor: '#ED145B', padding: 16, borderRadius: 12, alignItems: 'center', width: 140 },
   botaoEnviar: { backgroundColor: '#0ed145', padding: 16, borderRadius: 12, alignItems: 'center', width: 140 },
   botaoTexto: { color: '#000', fontSize: 16, fontWeight: '600' },
+  botaoTextoFechar: { color: '#fff', fontWeight: 'bold' },
+  modalContainer: { flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(0,0,0,0.8)' },
+  modalConteudo: { backgroundColor: '#1A1A1A', borderTopLeftRadius: 20, borderTopRightRadius: 20, padding: 20, height: '50%' },
+  modalTitulo: { color: '#ED145B', fontSize: 20, fontWeight: 'bold', marginBottom: 15, textAlign: 'center' },
+  itemSala: { padding: 15, borderBottomWidth: 1, borderBottomColor: '#333', flexDirection: 'row', justifyContent: 'space-between' },
+  itemTexto: { color: '#fff', fontSize: 16 },
+  itemVagas: { color: '#ED145B' },
+  botaoFechar: { marginTop: 10, backgroundColor: '#ED145B', padding: 15, borderRadius: 10, alignItems: 'center' }
 });
