@@ -5,7 +5,7 @@ import { AppContext } from './provider.js';
 
 export default function Sobre() {
   const router = useRouter();
-  const { salas } = useContext(AppContext);
+  const { salas, totalAlunosGlobal } = useContext(AppContext);
 
   return (
     <View style={styles.container}>
@@ -18,6 +18,11 @@ export default function Sobre() {
             <Text style={styles.vagasTexto}>Vagas: {item.vagas}</Text>
           </View>
         ))}
+        {/* CONTADOR GLOBAL: Aparece embaixo da última sala */}
+        <View style={styles.cardTotal}>
+          <Text style={styles.totalLabel}>Total de aluno no 2º ano de Ciências da computação</Text>
+          <Text style={styles.totalNumero}>{totalAlunosGlobal}</Text>
+        </View>
       </ScrollView>
 
       <TouchableOpacity style={styles.botaoVoltar} onPress={() => router.push('/')}>
@@ -75,4 +80,23 @@ const styles = StyleSheet.create({
     color: '#ED145B', 
     fontWeight: '600' 
   },
-});
+  cardTotal: {
+    width: 320,
+    marginTop: 10,
+    padding: 20,
+    alignItems: 'center',
+    borderTopWidth: 1,
+    borderTopColor: '#333',
+  },
+  totalLabel: {
+    color: '#FFF',
+    fontSize: 16,
+    textTransform: 'captlize',
+    textAlign: 'center',  
+  },
+  totalNumero: {
+    color: '#ED145B',
+    fontSize: 30,
+    fontWeight: 'bold'
+  },
+  });

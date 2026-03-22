@@ -42,7 +42,7 @@ O sistema gerencia em tempo real a disponibilidade de vagas, garantindo que nenh
     npx expo start -c
     ```
 
-### 📖 Como Funciona? (Régra de Negócio)
+### 📖 Como Funciona? (Regra de Negócio)
 O aplicativo utiliza o Provider para garantir que as atualizações de estado sejam seguras:
 
 1. Validação: O sistema busca as salas no AppContext ignorando diferenças entre maiúsculas e minúsculas.
@@ -58,4 +58,4 @@ O aplicativo utiliza o Provider para garantir que as atualizações de estado se
 
 563567 Raphael Mischiatti de Souza
 
-Desenvolvido para o CP - Faculdade de Informática e Administração Paulista (FIAP).
+Desenvolvido para o CP1 - Faculdade de Informática e Administração Paulista (FIAP).

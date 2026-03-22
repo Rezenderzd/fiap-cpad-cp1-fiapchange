@@ -11,7 +11,7 @@ export default function Home() {
   const [salaDestino, setSalaDestino] = useState('');
   const [motivo, setMotivo] = useState('');
 
-  const { salas, removerVaga, adicionarVaga } = useContext(AppContext);
+  const { salas, removerVaga, adicionarVaga, adicionarAoHistorico } = useContext(AppContext);
 
   const apagarDados = () => {
     setNome('');
@@ -26,8 +26,14 @@ export default function Home() {
     return;
   }
 
-  const existeSalaOrigem = salas.find(s => s.sala.toLowerCase() === salaAtual.toLowerCase());
-  const existeSalaDestino = salas.find(s => s.sala.toLowerCase() === salaDestino.toLowerCase());
+  // const existeSalaOrigem = salas.find(s => s.sala.toUpperCase() === salaAtual.toUpperCase());
+  // const existeSalaDestino = salas.find(s => s.sala.toUpperCase() === salaDestino.toUpperCase()); 
+  // caso queiram usar sem include coloque "=== salaDigitada.toUpperCase())" nas funcoes de adicionar 
+
+  
+  const existeSalaOrigem = salas.find(s => s.sala.toUpperCase().includes(salaAtual.toUpperCase().trim()));
+  const existeSalaDestino = salas.find(s => s.sala.toUpperCase().includes(salaDestino.toUpperCase().trim()));
+  
 
   if (!existeSalaOrigem || !existeSalaDestino) {
     Alert.alert('Erro', 'Sala não encontrada. Verifique os nomes digitados.');
@@ -39,11 +45,26 @@ export default function Home() {
     return;
   }
 
+  const chance = Math.random();
+  const motivosFalha = [
+  "Seu Motivo não foi aceito.",
+  "Existem muitos alunos com interesse nessa sala, tente novamente nos proximos meses.",
+  "Devido ao seu baixo desempenho academico sua solicitação foi negada.",
+  "Atualmente a mudança de sala está fora do ar.",
+  "Solicitação negada: o coordenador do curso precisa validar esta troca manualmente.",
+  "Aluno já possui uma solicitação de troca pendente de aprovação."
+];
+
+  if (chance > 0.7) {
+  const motivoAleatorio = motivosFalha[Math.floor(Math.random() * motivosFalha.length)];
+  Alert.alert('Erro', motivoAleatorio);
+  return;
+}
+  adicionarAoHistorico(nome, salaAtual, salaDestino);
   adicionarVaga(existeSalaOrigem.sala);
-  
   removerVaga(existeSalaDestino.sala);
 
-  Alert.alert('Sucesso', `Mudança de ${nome} processada!\nMotivo: ${motivo}`);
+  Alert.alert('Sucesso', `Mudança de ${nome} processada para ${salaDestino.toUpperCase()}!\nMotivo: ${motivo}`);
   apagarDados();
 };
 
@@ -62,7 +83,7 @@ export default function Home() {
       <View style={styles.blocoPergunta}>
         <Text style={styles.pergunta}>Sala Atual:</Text>
         <TextInput 
-          placeholder="Ex: 2ccpo" 
+          placeholder="Ex: 2CCPO" 
           style={styles.input} 
           onChangeText={setSalaAtual} 
           value={salaAtual} 
@@ -73,7 +94,7 @@ export default function Home() {
       <View style={styles.blocoPergunta}>
         <Text style={styles.pergunta}>Sala Destino:</Text>
         <TextInput 
-          placeholder="Ex: 2ccpw" 
+          placeholder="Ex: 2CCPW" 
           style={styles.input} 
           onChangeText={setSalaDestino} 
           value={salaDestino} 
@@ -114,7 +135,7 @@ const styles = StyleSheet.create({
   pergunta: { color: '#ED145B', fontSize: 16 },
   input: { width: 300, backgroundColor: '#ED145B', borderRadius: 8, padding: 12, fontSize: 14, color: '#000' },
   campoBotoes: { alignItems: 'center', justifyContent: 'space-around', flexDirection: 'row', gap: 20 },
-  botaoApagar: { backgroundColor: '#E83D84', padding: 16, borderRadius: 12, alignItems: 'center', width: 140 },
+  botaoApagar: { backgroundColor: '#ED145B', padding: 16, borderRadius: 12, alignItems: 'center', width: 140 },
   botaoEnviar: { backgroundColor: '#0ed145', padding: 16, borderRadius: 12, alignItems: 'center', width: 140 },
   botaoTexto: { color: '#000', fontSize: 16, fontWeight: '600' },
 });
