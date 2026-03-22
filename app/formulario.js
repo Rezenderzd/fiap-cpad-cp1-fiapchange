@@ -34,7 +34,6 @@ export default function Home() {
   };
 
   const processarTroca = () => {
-    // Lógica de falha aleatória do seu colega
     const chance = Math.random();
     const motivosFalha = [
       "Seu Motivo não foi aceito.",
@@ -51,7 +50,6 @@ export default function Home() {
       return;
     }
 
-    // Se passar na chance, executa a troca
     adicionarAoHistorico(nome, salaAtual.sala, salaDestino.sala);
     adicionarVaga(salaAtual.sala);
     removerVaga(salaDestino.sala);
@@ -76,7 +74,6 @@ export default function Home() {
       return;
     }
 
-    // FEATURE: Alert de Confirmação antes de rodar a lógica
     Alert.alert(
       "Confirmar Solicitação",
       `Deseja confirmar a troca de ${nome} da sala ${salaAtual.sala.toUpperCase()} para a ${salaDestino.sala.toUpperCase()}?`,
