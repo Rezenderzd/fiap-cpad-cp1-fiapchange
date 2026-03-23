@@ -16,6 +16,7 @@ O sistema gerencia em tempo real a disponibilidade de vagas, garantindo que nenh
 * **Visualização de Status:** Listagem dinâmica com `map` de todas as salas e suas respectivas ocupações.
 * **Histórico de Trocas (Modal):** Visualização centralizada de todas as atividades realizadas, acessível via Modal, garantindo uma interface mais limpaS.
 * **Cálculo Global de Alunos:** Monitoramento em tempo real do total de alunos matriculados em todas as salas, utilizando funções de agregação (`reduce`) no Contexto.
+* **Algoritmo para validação:** Utilização de Math.random para determinar se a mudança de sala será efetuada ou não, com uma chance de 70% de sucesso.
 
 ## 🛠️ Tecnologias Utilizadas
 * **Framework:** Expo (React Native)
