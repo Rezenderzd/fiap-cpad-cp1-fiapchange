@@ -57,7 +57,6 @@ O aplicativo utiliza o Provider para garantir que as atualizações de estado se
 
 4. **Sincronização Global:** Os dados são refletidos instantaneamente na listagem de salas e no Modal de Histórico, sem a necessidade de recarregar o aplicativo.
 
-<br>
 
 ### 🖼️Gif do projeto em prática (Demonstração)
 <p align="center">
@@ -75,13 +74,18 @@ O aplicativo utiliza o Provider para garantir que as atualizações de estado se
 </p>
 
 ### 💡 Decisões Técnicas
-* **Estrutura do Projeto:** O projeto foi desenvolvido utilizando React Native com Expo Router. A arquitetura foi pensada para separar a lógica de dados da interface, centralizando o estado global em um Context Provider, o que facilita a manutenção e evita a passagem excessiva de props.
+#### Estrutura do Projeto: 
+* O projeto foi desenvolvido utilizando React Native com Expo Router. A arquitetura foi pensada para separar a lógica de dados da interface, centralizando o estado global em um Context Provider, o que facilita a manutenção e evita a passagem excessiva de props.
 
-* **Hooks Utilizados:**
-useContext: O principal pilar do app, usado para compartilhar o histórico de trocas e a lista de salas entre todas as telas de forma síncrona.
-* useState: Utilizado para gerenciar dados locais, como os inputs do formulário e o controle de visibilidade (abrir/fechar) do Modal de histórico.
+#### Hooks Utilizados:
+* `useContext`: O principal pilar do app, usado para compartilhar o histórico de trocas e a lista de salas entre todas as telas de forma síncrona.
+* `useState`: Utilizado para gerenciar dados locais, como os inputs do formulário e o controle de visibilidade (abrir/fechar) do Modal de histórico.
+* `useRouter`: Hook nativo do expo-router utilizado para gerenciar a navegação programática entre as telas (ex: redirecionar após preencher o formulário).
 
-* **Organização da Navegação:** Utilizamos a navegação baseada em arquivos do Expo Router. A tela principal serve como aba central, enquanto o formulário e a visualização de salas são rotas secundarias. Para o histórico, optamos por um Modal sobreposto na Home.
+#### Organização da Navegação:
+* Utilizamos a navegação baseada em arquivos do Expo Router. A tela principal serve como aba central, enquanto o formulário e a visualização de salas são rotas secundarias. Para o histórico, optamos por um Modal sobreposto na Home.
+
+<br>
 
 ### 🚀 Próximos Passos
 Pedimos para IA gerar algumas sugestões de melhora para o projeto futuramente.
@@ -94,6 +98,8 @@ Pedimos para IA gerar algumas sugestões de melhora para o projeto futuramente.
 4. Sistema de Notificações: Avisos em tempo real (Push Notifications) para confirmar o sucesso da operação ou alertar sobre novas vagas disponíveis.
 
 5. Exportação de Logs: Função para exportar o histórico de trocas em formato CSV ou PDF para fins administrativos acadêmicos.
+
+<br>
 
 ### 👥 Contribuidores
 563415 Fernando Caires Silva
